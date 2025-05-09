@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blue Motivation</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="quote-card">
+        <div id="dailyQuote" class="daily-quote"></div>
+        <div id="quoteAuthor" class="quote-author"></div>
+      </div>
+      <button id="themeToggle" class="icon-btn" aria-label="Toggle Theme">🌙</button>
+    </header>
+
+    <main id="mainContent">
+      <!-- content injected here -->
+    </main>
+
+    <nav class="bottom-nav">
+      <button data-view="log" class="nav-btn active" aria-label="Log">✍️</button>
+      <button data-view="calendar" class="nav-btn" aria-label="Calendar">📅</button>
+      <button data-view="stats" class="nav-btn" aria-label="Stats">📊</button>
+      <button data-view="export" class="nav-btn" aria-label="Export">📤</button>
+    </nav>
+  </div>
+
+  <!-- Templates -->
+  <template id="logView">
+    <section class="card">
+      <h2>Daily Check-In</h2>
+      <form id="logForm" class="form-grid">
+        <input type="text" name="dsa" placeholder="🚀 DSA problems solved" required>
+        <input type="text" name="gym" placeholder="💪 Gym session" required>
+        <input type="text" name="ml" placeholder="🤖 ML study" required>
+        <input type="text" name="os" placeholder="⚙️ OS notes" required>
+        <input type="text" name="net" placeholder="🌐 Networking" required>
+
+        <h3 class="optional-heading">Schedule a Task (optional)</h3>
+        <input type="text" name="taskDesc" placeholder="Task description">
+        <input type="date" name="scheduledDate">
+        <input type="time" name="scheduledTime">
+
+        <button type="submit" class="primary-btn">Save Entry</button>
+      </form>
+    </section>
+
+    <section class="card stats-inline">
+      <div>🔥 Streak: <span id="streakCount">0</span> days</div>
+      <div>⭐ Points: <span id="pointsCount">0</span></div>
+    </section>
+
+    <section id="logs" class="logs-list"></section>
+  </template>
+
+  <template id="calendarView">
+    <section class="card">
+      <h2>Calendar</h2>
+      <input type="month" id="monthPicker" class="month-picker">
+      <div id="calendarGrid" class="calendar-grid"></div>
+    </section>
+  </template>
+
+  <template id="statsView">
+    <section class="card">
+      <h2>Your Summary</h2>
+      <ul class="stats-list">
+        <li>Total Entries: <span id="totalLogs">0</span></li>
+        <li>Upcoming Tasks: <span id="upcomingTasks">0</span></li>
+        <li>Total Points: <span id="totalPoints">0</span></li>
+      </ul>
+    </section>
+  </template>
+
+  <template id="exportView">
+    <section class="card">
+      <h2>Export & Manage</h2>
+      <button id="exportBtn" class="primary-btn full">Download JSON</button>
+      <button id="clearBtn" class="danger-btn full">Clear All</button>
+    </section>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
