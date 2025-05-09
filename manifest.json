@@ -1,0 +1,26 @@
+{
+  "name": "Blue Motivation 🔥",
+  "short_name": "BlueMotiv",
+  "id": "/?source=pwa",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f7f9fc",
+  "theme_color": "#3b82f6",
+  "description": "Motivation Tracker by AJ — ignite your daily grind!",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["productivity", "education"],
+  "lang": "en-US"
+}
