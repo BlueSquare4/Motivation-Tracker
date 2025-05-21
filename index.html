@@ -18,9 +18,7 @@
       <button id="themeToggle" class="icon-btn" aria-label="Toggle Theme">🌙</button>
     </header>
 
-    <main id="mainContent">
-      <!-- content injected here -->
-    </main>
+    <main id="mainContent"></main>
 
     <nav class="bottom-nav">
       <button data-view="log" class="nav-btn active" aria-label="Log">✍️</button>
@@ -35,11 +33,42 @@
     <section class="card">
       <h2>Daily Check-In</h2>
       <form id="logForm" class="form-grid">
-        <input type="text" name="dsa" placeholder="🚀 DSA problems solved" required>
-        <input type="text" name="gym" placeholder="💪 Gym session" required>
-        <input type="text" name="ml" placeholder="🤖 ML study" required>
-        <input type="text" name="os" placeholder="⚙️ OS notes" required>
-        <input type="text" name="net" placeholder="🌐 Networking" required>
+        <div class="dsa-section">
+          <div class="dsa-motivation">
+            <span class="dsa-icon">🚀</span>
+            <span class="dsa-motivate-msg">"Every solved problem is a step closer to mastery!"</span>
+          </div>
+          <input type="text" name="dsa" class="dsa-input" placeholder="DSA problems solved (e.g., 3 Leetcode)" required>
+        </div>
+
+        <div class="gym-section">
+          <div class="gym-header">
+            <span class="gym-icon">💪</span>
+            <span class="gym-title">Gym</span>
+          </div>
+          <input type="text" name="gymTarget" class="gym-target" placeholder="Target body part (e.g., Chest)">
+          <div class="gym-row">
+            <label for="gymNum" class="gym-label"># Exercises:</label>
+            <select name="gymNum" id="gymNum" class="gym-num" min="1" max="7" required>
+              <option value="">Select</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+            </select>
+          </div>
+          <div id="gymExerciseSlots"></div>
+        </div>
+
+        <div class="others-section">
+          <div class="others-header">Others</div>
+          <input type="text" name="ml" placeholder="🤖 ML study">
+          <input type="text" name="os" placeholder="⚙️ OS notes">
+          <input type="text" name="net" placeholder="🌐 Networking">
+        </div>
 
         <h3 class="optional-heading">Schedule a Task (optional)</h3>
         <input type="text" name="taskDesc" placeholder="Task description">
