@@ -53,8 +53,16 @@ function saveLogs() {
   localStorage.setItem('logs', JSON.stringify(logs));
 }
 function calcPoints(entry) {
-  return ['dsa','gym','ml','os','net']
-    .reduce((sum, k) => sum + (entry[k]?.trim() ? 2 : 0), 0);
+  // 2 points for DSA if filled, 2 for each gym exercise, 1 for each 'Others' if filled
+  let pts = 0;
+  if (entry.dsa && entry.dsa.trim()) pts += 2;
+  if (entry.gymExercises && Array.isArray(entry.gymExercises)) {
+    pts += entry.gymExercises.filter(e => e.name && e.name.trim()).length * 2;
+  }
+  ['ml','os','net'].forEach(k => {
+    if (entry[k] && entry[k].trim()) pts += 1;
+  });
+  return pts;
 }
 
 // Log View
@@ -63,16 +71,52 @@ function initLogView() {
   const logsDiv = document.getElementById('logs');
   const streakEl = document.getElementById('streakCount');
   const pointsEl = document.getElementById('pointsCount');
+  const gymNum = form.querySelector('[name="gymNum"]');
+  const gymSlotsDiv = document.getElementById('gymExerciseSlots');
+
+  // Dynamic gym slots
+  gymNum.addEventListener('change', () => {
+    gymSlotsDiv.innerHTML = '';
+    const n = parseInt(gymNum.value);
+    if (!n || n < 1 || n > 7) return;
+    for (let i = 0; i < n; i++) {
+      const row = document.createElement('div');
+      row.className = 'gym-exercise-row';
+      row.innerHTML = `
+        <input type="text" name="gymExerciseName${i}" placeholder="Exercise Name">
+        <input type="number" name="gymExerciseSets${i}" placeholder="Sets" min="1" max="10">
+        <input type="number" name="gymExerciseReps${i}" placeholder="Reps" min="1" max="50">
+      `;
+      gymSlotsDiv.appendChild(row);
+    }
+  });
+
   renderLogs();
 
   form.addEventListener('submit', e => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(form));
+    // Gather gym exercises
+    let gymExercises = [];
+    const num = parseInt(data.gymNum);
+    for (let i = 0; i < num; i++) {
+      gymExercises.push({
+        name: data[`gymExerciseName${i}`] || '',
+        sets: data[`gymExerciseSets${i}`] || '',
+        reps: data[`gymExerciseReps${i}`] || ''
+      });
+      // Remove from data to avoid clutter
+      delete data[`gymExerciseName${i}`];
+      delete data[`gymExerciseSets${i}`];
+      delete data[`gymExerciseReps${i}`];
+    }
+    data.gymExercises = gymExercises;
     data.timestamp = new Date().toLocaleString();
     data.points = calcPoints(data);
     logs.push(data);
     saveLogs();
     form.reset();
+    gymSlotsDiv.innerHTML = '';
     renderLogs();
   });
 
@@ -84,14 +128,32 @@ function initLogView() {
     // Show each entry
     logsDiv.innerHTML = logs.map((l,i) => `
       <div>
+        <button class="delete-btn" data-index="${i}" title="Delete Entry">✖</button>
         <strong>Day ${i+1} — ${l.timestamp}</strong><br>
-        🚀 DSA: ${l.dsa || '–'} | 💪 Gym: ${l.gym || '–'}<br>
-        🤖 ML: ${l.ml || '–'} | ⚙️ OS: ${l.os || '–'}<br>
-        🌐 Net: ${l.net || '–'}<br>
+        <span style="color:var(--primary);font-weight:600;">🚀 DSA:</span> ${l.dsa || '–'}<br>
+        <span style="font-weight:600;">💪 Gym:</span> 
+        ${l.gymTarget ? `Target: ${l.gymTarget}<br>` : ''}
+        ${l.gymExercises && l.gymExercises.length ? l.gymExercises.map((ex, idx) => 
+          ex.name ? `&nbsp;&nbsp;${idx+1}. ${ex.name} (${ex.sets || '-'} sets × ${ex.reps || '-'} reps)` : ''
+        ).filter(Boolean).join('<br>') : '–'}<br>
+        <span style="font-weight:600;">Others:</span>
+        ${l.ml ? `🤖 ML: ${l.ml} ` : ''}${l.os ? `⚙️ OS: ${l.os} ` : ''}${l.net ? `🌐 Net: ${l.net}` : ''}<br>
         <em>Points: ${l.points}</em><br>
         📅 ${l.scheduledDate || '–'} @ ${l.scheduledTime || '–'}<br>
         📝 ${l.taskDesc || 'No task'}
       </div>`).join('');
+
+    // Attach delete handlers
+    logsDiv.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.onclick = function() {
+        const idx = parseInt(this.dataset.index);
+        if (confirm('Delete this entry?')) {
+          logs.splice(idx, 1);
+          saveLogs();
+          renderLogs();
+        }
+      }
+    });
   }
 }
 
@@ -145,4 +207,4 @@ function initExport() {
       logs = []; saveLogs(); switchView('log');
     }
   };
-    }
+}
